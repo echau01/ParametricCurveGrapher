@@ -64,7 +64,7 @@ public class Screen extends JPanel {
 		}
 
 		g.fillOval((int) (curve.getCurrentXCoord() * 100 + SCREEN_WIDTH * 0.5),
-				(int) (curve.getCurrentYCoord() * -120 + SCREEN_HEIGHT * 0.6),
+				(int) (curve.getCurrentYCoord() * -100 + SCREEN_HEIGHT * 0.5),
 				CURVE_WIDTH, CURVE_HEIGHT);
 	}
 	
