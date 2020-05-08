@@ -9,13 +9,13 @@ import java.awt.event.ActionListener;
 import javax.swing.JPanel;
 
 /**
- * The Screen renders the ParametricCurve.
+ * The Screen renders the ButterflyCurve.
  */
 @SuppressWarnings("serial")
 public class Screen extends JPanel {
 	/* Size of the window depends on these constants */
-	private static final int WIDTH = 1024;
-	private static final int HEIGHT = 780;
+	private static final int SCREEN_WIDTH = 1024;
+	private static final int SCREEN_HEIGHT = 780;
 	
 	// The curve being drawn on the screen
 	private ButterflyCurve curve;
@@ -28,12 +28,15 @@ public class Screen extends JPanel {
 
 	// All possible colours that the curve can be drawn with
 	private CurveColour[] colours = CurveColour.values();
+
+	private static final int CURVE_WIDTH = 10;
+	private static final int CURVE_HEIGHT = 10;
 	
 	/**
-	 * Construct a Screen on which the specified ParametricCurve will be drawn.
+	 * Construct a Screen on which the specified ButterflyCurve will be drawn.
 	 */
 	public Screen(ButterflyCurve curve) {
-		this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+		this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
 		this.painter = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -60,7 +63,9 @@ public class Screen extends JPanel {
 			}
 		}
 
-		g.fillOval((int) (curve.getCurrentXCoord() * 100 + WIDTH * 0.5), (int) (curve.getCurrentYCoord() * -120 + HEIGHT * 0.6), 10, 10);
+		g.fillOval((int) (curve.getCurrentXCoord() * 100 + SCREEN_WIDTH * 0.5),
+				(int) (curve.getCurrentYCoord() * -120 + SCREEN_HEIGHT * 0.6),
+				CURVE_WIDTH, CURVE_HEIGHT);
 	}
 	
 	private void setCurveColour(Graphics g) {
