@@ -23,19 +23,11 @@ public class Screen extends JPanel {
 	// The ActionListener that paints the screen
 	private final ActionListener painter;
 
-	/* 
-	 * An integer from 0 to 2. Each time the curve changes direction, the cycle number increases.
-	 * Every number corresponds to a certain colour with which the curve is drawn.
-	 */
-	private int currentCycle;
+	// The colour that the curve is currently being drawn with
+	private CurveColour curveColour;
 
-	/* Cycle numbers */
-	private static final int RED_CYCLE = 0;
-	private static final int GREEN_CYCLE = 1;
-	private static final int BLUE_CYCLE = 2;
-
-	// REMEMBER TO CHANGE THIS WHEN YOU ADD MORE CYCLES!
-	private static final int NUMBER_OF_CYCLES = 3;
+	// All possible colours that the curve can be drawn with
+	private CurveColour[] colours = CurveColour.values();
 	
 	/**
 	 * Construct a Screen on which the specified ParametricCurve will be drawn.
@@ -50,7 +42,7 @@ public class Screen extends JPanel {
 		};
 
 		this.curve = curve;
-		this.currentCycle = 0;
+		curveColour = CurveColour.RED;
 	}
 
 	@Override
@@ -60,11 +52,11 @@ public class Screen extends JPanel {
 		this.setCurveColour(g);
 		
 		if (curve.willChangeDirection()) {
-			// Change cycle
-			if (currentCycle == NUMBER_OF_CYCLES - 1) {
-				currentCycle = 0;
+			if (curveColour == colours[colours.length - 1]) {
+				curveColour = colours[0];
 			} else {
-				currentCycle++;
+				// Set curveColour to the next colour in the colours array
+				curveColour = colours[curveColour.ordinal() + 1];
 			}
 		}
 
@@ -72,11 +64,11 @@ public class Screen extends JPanel {
 	}
 	
 	private void setCurveColour(Graphics g) {
-		if (currentCycle == RED_CYCLE) {
+		if (curveColour == CurveColour.RED) {
 			g.setColor(Color.RED);
-		} else if (currentCycle == GREEN_CYCLE) {
+		} else if (curveColour == CurveColour.GREEN) {
 			g.setColor(Color.GREEN);
-		} else if (currentCycle == BLUE_CYCLE) {
+		} else if (curveColour == CurveColour.BLUE) {
 			g.setColor(Color.BLUE);
 		}
 	}
