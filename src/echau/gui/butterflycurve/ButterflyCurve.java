@@ -11,6 +11,11 @@ package echau.gui.butterflycurve;
  * {@code x(t) = [sin(t)][exp(cos(t)) - 2cos(4t) - (sin(t / 12))^5]}
  * <br>
  * {@code y(t) = [cos(t)][exp(cos(t)) - 2cos(4t) - (sin(t / 12))^5]}
+ *
+ * @see
+ * <a href="https://en.wikipedia.org/wiki/Butterfly_curve_(transcendental)">
+ *     https://en.wikipedia.org/wiki/Butterfly_curve_(transcendental)
+ * </a>
  */
 public class ButterflyCurve {
 	/* Current x- and y-coordinates of the curve */
@@ -23,9 +28,20 @@ public class ButterflyCurve {
 	/* Lower and upper bounds of t */
 	private final double tLowerBound;
 	private final double tUpperBound;
-	
+
+	/* The amount by which the t field is incremented every time the Timer ticks (once per millisecond).
+	 *
+	 * <br>
+	 * <br>
+	 *
+	 * Setting the value of this constant to be greater than the difference between the upper and lower
+	 * bounds of the parametric curve's t value will cause problems. In other words do not make
+	 * the value of this constant greater than tUpperBound() - tLowerBound().
+	 */
+	private static final double T_INCREMENT = 0.003;
+
 	// Used to compare the floating-point value of t to tLowerBound and tUpperBound.
-	private static final double EPSILON = Gui.T_INCREMENT;
+	private static final double EPSILON = T_INCREMENT;
 	
 	// The array storing all coordinates of the function within the domain T_LOWER_BOUND <= t <= T_UPPER_BOUND
 	private double[][] coordinateArray;
@@ -46,14 +62,14 @@ public class ButterflyCurve {
 		this.tLowerBound = tLowerBound;
 		this.tUpperBound = tUpperBound;
 		
-		if (tUpperBound - tLowerBound < Gui.T_INCREMENT) {
+		if (tUpperBound - tLowerBound < T_INCREMENT) {
 			// Guarantees that the initial value of currentIndex is within the array
 			this.t = (tUpperBound + tLowerBound) / 2;
 		} else {
 			this.t = tLowerBound + 0.01;
 		}
 		
-		currentIndex = (int) ((t - tLowerBound) / Gui.T_INCREMENT);
+		currentIndex = (int) ((t - tLowerBound) / T_INCREMENT);
 		
 		this.generateCoordinateArray();
 		tIncreasing = true;
@@ -76,10 +92,10 @@ public class ButterflyCurve {
 	private void updateTAndCurrentIndex() {
 		if (tIncreasing) {
 			currentIndex++;
-			t += Gui.T_INCREMENT;
+			t += T_INCREMENT;
 		} else {
 			currentIndex--;
-			t -= Gui.T_INCREMENT;
+			t -= T_INCREMENT;
 		}
 	}
 	
@@ -102,12 +118,12 @@ public class ButterflyCurve {
 	private void generateCoordinateArray() {
 		// We add 10 extra spaces to the end of coordinateArray to prevent ArrayIndexOutOfBounds exceptions.
 		// Floating-point arithmetic is dodgy
-		coordinateArray = new double[10 + (int) ((tUpperBound - tLowerBound) / Gui.T_INCREMENT)][2];
-		for (double i = tLowerBound; i <= tUpperBound; i += Gui.T_INCREMENT) {
+		coordinateArray = new double[10 + (int) ((tUpperBound - tLowerBound) / T_INCREMENT)][2];
+		for (double i = tLowerBound; i <= tUpperBound; i += T_INCREMENT) {
 			// This is where the parametric equation goes
 			// Casting to an int always rounds down, so we add 0.001 to prevent floating-point arithmetic from screwing things up
-			coordinateArray[(int) ((i - tLowerBound + 0.001) / Gui.T_INCREMENT)][0] = Math.sin(i) * (Math.pow(Math.E, Math.cos(i)) - 2 * Math.cos(4 * i) - Math.pow(Math.sin(i / 12), 5));
-			coordinateArray[(int) ((i - tLowerBound + 0.001) / Gui.T_INCREMENT)][1] = Math.cos(i) * (Math.pow(Math.E, Math.cos(i)) - 2 * Math.cos(4 * i) - Math.pow(Math.sin(i / 12), 5));
+			coordinateArray[(int) ((i - tLowerBound + 0.001) / T_INCREMENT)][0] = Math.sin(i) * (Math.pow(Math.E, Math.cos(i)) - 2 * Math.cos(4 * i) - Math.pow(Math.sin(i / 12), 5));
+			coordinateArray[(int) ((i - tLowerBound + 0.001) / T_INCREMENT)][1] = Math.cos(i) * (Math.pow(Math.E, Math.cos(i)) - 2 * Math.cos(4 * i) - Math.pow(Math.sin(i / 12), 5));
 		}
 	}
 	

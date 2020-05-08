@@ -8,10 +8,10 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JPanel;
 
-@SuppressWarnings("serial")
 /**
  * The Screen renders the ParametricCurve.
  */
+@SuppressWarnings("serial")
 public class Screen extends JPanel {
 	/* Size of the window depends on these constants */
 	private static final int WIDTH = 1024;

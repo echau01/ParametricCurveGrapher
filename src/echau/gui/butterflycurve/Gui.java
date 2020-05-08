@@ -15,24 +15,8 @@ public class Gui extends JFrame {
 	private ButterflyCurve curve;
 	private Screen screen;
 	
-	/** 
-	 * The amount that {@link ButterflyCurve#getCurrentT()} will be incremented by every time the
-	 * Timer ticks (once per millisecond).
-	 * 
-	 * <br>
-	 * <br>
-	 * 
-	 * Setting the value of this constant to be greater than the difference between the upper and lower
-	 * bounds of the parametric curve's t value will cause problems. In other words do not make
-	 * the value of this constant greater than 
-	 * {@code this.getCurve().getTUpperBound() - this.getCurve().getTLowerBound()}
-	 */
-	public static final double T_INCREMENT = 0.003;
-	
 	public Gui() {
-		// here, we subtract the preferred lower bound by T_LOWER_BOUND_EPSILON, and pass the
-		// result into the ButterflyCurve constructor
-		curve = new ButterflyCurve(0, 6.2835);
+		curve = new ButterflyCurve(0, 2 * Math.PI);
 		screen = new Screen(curve);
 		this.add(screen);
 	}
