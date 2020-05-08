@@ -59,7 +59,7 @@ public class Screen extends JPanel {
 
 		this.setCurveColour(g);
 		
-		if (curve.isChangingDirection()) {
+		if (curve.willChangeDirection()) {
 			// Change cycle
 			if (currentCycle == NUMBER_OF_CYCLES - 1) {
 				currentCycle = 0;

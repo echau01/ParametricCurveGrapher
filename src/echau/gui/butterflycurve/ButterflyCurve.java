@@ -29,101 +29,94 @@ public class ButterflyCurve {
 	private final double tLowerBound;
 	private final double tUpperBound;
 
-	/* The amount by which the t field is incremented every time the Timer ticks (once per millisecond).
-	 *
-	 * <br>
-	 * <br>
-	 *
-	 * Setting the value of this constant to be greater than the difference between the upper and lower
-	 * bounds of the parametric curve's t value will cause problems. In other words do not make
-	 * the value of this constant greater than tUpperBound() - tLowerBound().
-	 */
-	private static final double T_INCREMENT = 0.003;
+	// The (approximate) number of points of the butterfly curve that this program will plot (give or take a few points
+	// due to imprecision in floating-point arithmetic) each time t goes from tLowerBound to tUpperBound (or vice versa).
+	// CONSTRAINT: MUST BE POSITIVE.
+	private static final int APPROX_NUM_POINTS = 5000;
+
+	// The amount by which the t field is incremented every time the Timer ticks (once per millisecond).
+	private final double tIncrement;
 
 	// Used to compare the floating-point value of t to tLowerBound and tUpperBound.
-	private static final double EPSILON = T_INCREMENT;
-	
-	// The array storing all coordinates of the function within the domain T_LOWER_BOUND <= t <= T_UPPER_BOUND
-	private double[][] coordinateArray;
-
-	// Current index of the coordinate array being accessed
-	private int currentIndex;
+	private final double epsilon;
 	
 	// Indicates whether the value of t is increasing
 	private boolean tIncreasing;
-	
-	// Indicates whether the curve is about to change direction; i.e. whether t is at a lower or upper bound
+
+	// Indicates whether the curve will change direction on the next clock tick.
+	private boolean willChangeDirection;
+
+	/* Represents whether the curve is in the process of changing direction.
+	 * If willChangeDirection is false, changingDirection must be false.
+	 *
+	 * Note: It takes two clock ticks for the curve to fully change direction.
+	 */
 	private boolean changingDirection;
 	
 	/**
-	 * Creates a ButterflyCurve with the specified lower and upper bound for t.
+	 * Creates a ButterflyCurve with the specified lower and upper bound for t. This ButterflyCurve
+	 * will have an initial t value of tLowerBound, and t will start off increasing.
 	 */
 	public ButterflyCurve(double tLowerBound, double tUpperBound) {
 		this.tLowerBound = tLowerBound;
 		this.tUpperBound = tUpperBound;
-		
-		if (tUpperBound - tLowerBound < T_INCREMENT) {
-			// Guarantees that the initial value of currentIndex is within the array
-			this.t = (tUpperBound + tLowerBound) / 2;
-		} else {
-			this.t = tLowerBound + 0.01;
-		}
-		
-		currentIndex = (int) ((t - tLowerBound) / T_INCREMENT);
-		
-		this.generateCoordinateArray();
+		t = tLowerBound;
 		tIncreasing = true;
+		willChangeDirection = false;
+		changingDirection = false;
+		tIncrement = (tUpperBound - tLowerBound) / APPROX_NUM_POINTS;
+		epsilon = tIncrement / 2;
 	}
 	
 	/**
-	 * Updates the state of the curve. First, the values of t and currentIndex are updated, then the
-	 * next x- and y-coordinates are fetched and assigned to the variables xCoord and yCoord.
+	 * Updates the state of the curve. This method is called on every clock tick.
 	 */
 	public void update() {
-		updateTAndCurrentIndex();
-		checkDirection();
-		xCoord = coordinateArray[currentIndex][0];
-		yCoord = coordinateArray[currentIndex][1];
-	}
-	
-	/**
-	 * Updates the values of t and currentIndex
-	 */
-	private void updateTAndCurrentIndex() {
+		// Change the values of t, tIncreasing, and changingDirection according to
+		// the current values of tIncreasing and willChangeDirection.
+		// If t is close to a boundary (tLowerBound or tUpperBound), then the value
+		// of t is set to the value of that boundary.
+		// The block of if statements below works with the updateWillChangeDirection()
+		// method to guarantee that t stays in the range tLowerBound <= t <= tUpperBound.
 		if (tIncreasing) {
-			currentIndex++;
-			t += T_INCREMENT;
+			if (willChangeDirection) {
+				tIncreasing = false;
+				t = tUpperBound;
+				changingDirection = true;
+			} else {
+				t += tIncrement;
+				changingDirection = false;
+			}
 		} else {
-			currentIndex--;
-			t -= T_INCREMENT;
+			if (willChangeDirection) {
+				tIncreasing = true;
+				t = tLowerBound;
+				changingDirection = true;
+			} else {
+				t -= tIncrement;
+				changingDirection = false;
+			}
 		}
+
+		updateWillChangeDirection();
+		double multiplier = Math.pow(Math.E, Math.cos(t)) - 2 * Math.cos(4 * t) - Math.pow(Math.sin(t / 12), 5);
+		xCoord = Math.sin(t) * multiplier;
+		yCoord = Math.cos(t) * multiplier;
 	}
 	
 	/**
-	 * Checks whether the curve is about to change direction (i.e. whether {@code t} is at an upper or lower bound).
-	 * This method changes the values of goingClockwise and changingDirection accordingly.
+	 * Checks whether the curve will change direction on the next tick. This method changes the value of
+	 * willChangeDirection accordingly.
 	 */
-	private void checkDirection() {
-		if (t <= tLowerBound + EPSILON || t >= tUpperBound - EPSILON) {
-			tIncreasing = !tIncreasing;
-			changingDirection = true;
-			return;
-		}
-		changingDirection = false;
-	}
-
-	/**
-	 * This method is to be used for pre-generating the coordinate arrays for efficiency.
-	 */
-	private void generateCoordinateArray() {
-		// We add 10 extra spaces to the end of coordinateArray to prevent ArrayIndexOutOfBounds exceptions.
-		// Floating-point arithmetic is dodgy
-		coordinateArray = new double[10 + (int) ((tUpperBound - tLowerBound) / T_INCREMENT)][2];
-		for (double i = tLowerBound; i <= tUpperBound; i += T_INCREMENT) {
-			// This is where the parametric equation goes
-			// Casting to an int always rounds down, so we add 0.001 to prevent floating-point arithmetic from screwing things up
-			coordinateArray[(int) ((i - tLowerBound + 0.001) / T_INCREMENT)][0] = Math.sin(i) * (Math.pow(Math.E, Math.cos(i)) - 2 * Math.cos(4 * i) - Math.pow(Math.sin(i / 12), 5));
-			coordinateArray[(int) ((i - tLowerBound + 0.001) / T_INCREMENT)][1] = Math.cos(i) * (Math.pow(Math.E, Math.cos(i)) - 2 * Math.cos(4 * i) - Math.pow(Math.sin(i / 12), 5));
+	private void updateWillChangeDirection() {
+		if (!changingDirection) {
+			if (tIncreasing && t + tIncrement >= tUpperBound - epsilon) {
+				willChangeDirection = true;
+			} else if (!tIncreasing && t - tIncrement <= tLowerBound + epsilon) {
+				willChangeDirection = true;
+			}
+		} else {
+			willChangeDirection = false;
 		}
 	}
 	
@@ -149,13 +142,6 @@ public class ButterflyCurve {
 	}
 	
 	/**
-	 * @return The current index of the coordinate array.
-	 */
-	public int getCurrentIndex() {
-		return currentIndex;
-	}
-	
-	/**
 	 * @return The lower bound of the t variable.
 	 */
 	public double getTLowerBound() {
@@ -175,11 +161,11 @@ public class ButterflyCurve {
 	public boolean isTIncreasing() {
 		return tIncreasing;
 	}
-	
+
 	/**
 	 * @return A boolean indicating whether the curve will reverse its direction on the next tick.
 	 */
-	public boolean isChangingDirection() {
-		return changingDirection;
+	public boolean willChangeDirection() {
+		return willChangeDirection;
 	}
 }
