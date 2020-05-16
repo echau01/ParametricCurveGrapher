@@ -1,4 +1,4 @@
-package echau.gui.butterflycurve;
+package main;
 
 /**
  * This class represents the actual butterfly curve. This class tells the Screen class where to

@@ -1,4 +1,4 @@
-package echau.gui.butterflycurve;
+package main;
 
 import javax.swing.JFrame;
 import javax.swing.Timer;
