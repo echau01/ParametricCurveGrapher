@@ -56,8 +56,13 @@ public class ButterflyCurve {
 	/**
 	 * Creates a ButterflyCurve with the specified lower and upper bound for t. This ButterflyCurve
 	 * will have an initial t value of tLowerBound, and t will start off increasing.
+	 *
+	 * @throws IllegalArgumentException if tLowerBound > tUpperBound
 	 */
 	public ButterflyCurve(double tLowerBound, double tUpperBound) {
+		if (tLowerBound > tUpperBound) {
+			throw new IllegalArgumentException("tLowerBound cannot be greater than tUpperBound.");
+		}
 		this.tLowerBound = tLowerBound;
 		this.tUpperBound = tUpperBound;
 		t = tLowerBound;
