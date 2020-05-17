@@ -2,13 +2,13 @@ package main;
 
 import java.util.*;
 
-public class EquationParser {
-    private Map<String, Integer> operatorToPrecedence = new HashMap<String, Integer>();
-    private Map<String, Boolean> operatorToRightAssociativity = new HashMap<String, Boolean>();
-
-    private static EquationParser instance;
-
-    private EquationParser() {}
+/**
+ * This class contains static methods for evaluating mathematical expressions. The
+ * class cannot be instantiated.
+ */
+public final class EquationParser {
+    private static Map<String, Integer> operatorToPrecedence = new HashMap<String, Integer>();
+    private static Map<String, Boolean> operatorIsRightAssociativeMap = new HashMap<String, Boolean>();
 
     /**
      * The token used to represent the unary minus operator when a
@@ -16,27 +16,36 @@ public class EquationParser {
      */
     public static final String UNARY_MINUS_TOKEN = "$";
 
+    private EquationParser() {}
+
+    // Initialize HashMaps
+    static {
+        operatorToPrecedence.put("+", 1);
+        operatorToPrecedence.put("-", 1);
+        operatorToPrecedence.put("*", 2);
+        operatorToPrecedence.put("/", 2);
+        operatorToPrecedence.put("^", 3);
+
+        operatorIsRightAssociativeMap.put("+", false);
+        operatorIsRightAssociativeMap.put("-", false);
+        operatorIsRightAssociativeMap.put("*", false);
+        operatorIsRightAssociativeMap.put("/", false);
+        operatorIsRightAssociativeMap.put("^", true);
+    }
+
     /**
-     * @return the singleton instance of this class
+     * Evaluates the given expression, with the given t value being
+     * substituted for every occurrence of t in the expression. The
+     * expression must be valid and written in infix notation. The
+     * expression can include numbers and the following symbols: t,
+     * +, -, *, /, ^, (, ), sin, cos, tan. The plus (+) symbol cannot be
+     * used as a unary operator, but the minus (-) symbol can be unary.
+     * Any whitespace in the expression is ignored.
+     *
+     * @throws IllegalArgumentException if the expression is invalid.
      */
-    public static EquationParser getInstance() {
-        if (instance != null) {
-            return instance;
-        }
-        instance = new EquationParser();
-        instance.operatorToPrecedence.put("+", 1);
-        instance.operatorToPrecedence.put("-", 1);
-        instance.operatorToPrecedence.put("*", 2);
-        instance.operatorToPrecedence.put("/", 2);
-        instance.operatorToPrecedence.put("^", 3);
-
-        instance.operatorToRightAssociativity.put("+", false);
-        instance.operatorToRightAssociativity.put("-", false);
-        instance.operatorToRightAssociativity.put("*", false);
-        instance.operatorToRightAssociativity.put("/", false);
-        instance.operatorToRightAssociativity.put("^", true);
-
-        return instance;
+    public static double evaluate(String expression, double t) {
+        return evaluate(infixToPostfix(expression), t);
     }
 
     /**
@@ -53,7 +62,7 @@ public class EquationParser {
      * @throws IllegalArgumentException if the postfix expression
      * contained in the given Queue is invalid.
      */
-    public double evaluate(Queue<String> postfixQueue, double t) {
+    public static double evaluate(Queue<String> postfixQueue, double t) {
         Stack<Double> operands = new Stack<Double>();
 
         while (!postfixQueue.isEmpty()) {
@@ -126,21 +135,68 @@ public class EquationParser {
      * expression must be valid and must be written in infix notation.
      * The expression may contain real numbers, whitespace around operators
      * and trigonometric functions, and the following symbols: t, +, -, *, /,
-     * ^, (, ), sin, cos, tan.
+     * ^, (, ), sin, cos, tan. Any whitespace in the expression is ignored.
      *
      * @return a queue of the tokens in the given infix expression converted to
      * postfix notation
      *
      * @throws IllegalArgumentException if expression is not valid
      */
-    public Queue<String> postfix(String expression) throws IllegalArgumentException {
+    public static Queue<String> infixToPostfix(String expression) throws IllegalArgumentException {
         Queue<String> output = new LinkedList<String>();
-        Stack<String> operatorsAndFunctions = new Stack<String>();
+
+        // Stores operators, brackets, and trigonometric functions
+        Stack<String> operatorBracketFunctionStack = new Stack<String>();
 
         List<String> tokens = tokenize(expression);
 
+        /* Implementation of the Shunting-Yard algorithm adapted from
+         * https://en.wikipedia.org/wiki/Shunting-yard_algorithm
+         */
         for (int i = 0; i < tokens.size(); i++) {
+            String currentToken = tokens.get(i);
+            if (currentToken.matches("[+\\-*/]")) {
+                if (!operatorBracketFunctionStack.isEmpty()) {
+                    int precedence = operatorToPrecedence.get(currentToken);
+                    String nextStackSymbol = operatorBracketFunctionStack.peek();
+                    while ((nextStackSymbol.matches("sin|cos|tan")
+                            || nextStackSymbol.equals(UNARY_MINUS_TOKEN))
+                            || (nextStackSymbol.matches("[+\\-*/^]")
+                            && (operatorToPrecedence.get(nextStackSymbol) > precedence
+                            || (operatorToPrecedence.get(nextStackSymbol) == precedence
+                            && !operatorIsRightAssociativeMap.get(nextStackSymbol))))) {
+                        output.add(operatorBracketFunctionStack.pop());
 
+                        if (operatorBracketFunctionStack.isEmpty()) {
+                            break;
+                        } else {
+                            nextStackSymbol = operatorBracketFunctionStack.peek();
+                        }
+                    }
+                }
+
+                operatorBracketFunctionStack.push(currentToken);
+            } else if (currentToken.matches("sin|cos|tan|\\(|\\^")
+                        || currentToken.equals(UNARY_MINUS_TOKEN)) {
+                operatorBracketFunctionStack.push(currentToken);
+            } else if (currentToken.equals(")")) {
+                while (!operatorBracketFunctionStack.peek().equals("(")) {
+                    output.add(operatorBracketFunctionStack.pop());
+                }
+
+                // Note: when the while loop terminates, the token at the
+                // top of the stack must be a left parenthesis.
+
+                operatorBracketFunctionStack.pop();
+            } else {
+                // At this point, currentToken is either a number or "t".
+                output.add(currentToken);
+            }
+        }
+
+        int stackSize = operatorBracketFunctionStack.size();
+        for (int i = 0; i < stackSize; i++) {
+            output.add(operatorBracketFunctionStack.pop());
         }
 
         return output;
@@ -153,13 +209,14 @@ public class EquationParser {
      * is inserted wherever there is implicit multiplication (e.g. "2t",
      * "-4sin(6)"). For example, the expression "5 + 2tan(-t - 9)" would be
      * tokenized as the list ["5", "+", "2", "*", "tan", "(", UNARY_MINUS_TOKEN,
-     * "t", "-", "9", ")"].
+     * "t", "-", "9", ")"]. Any whitespace in the expression is ignored, so
+     * an expression like "3 7" is interpreted as "37".
      *
      * @return a list of the tokens in the given infix expression
      *
      * @throws IllegalArgumentException if the given expression is invalid.
      */
-    public List<String> tokenize(String expression) throws IllegalArgumentException {
+    public static List<String> tokenize(String expression) throws IllegalArgumentException {
         List<String> tokens = new ArrayList<String>(expression.length());
 
         // This stack stores left parentheses to check if all brackets are balanced.
@@ -243,6 +300,9 @@ public class EquationParser {
                         operand.setLength(0);
                         operandHasDecimalPoint = false;
                     } else if (currentChar.equals("-")) {
+                        /* The algorithm to distinguish unary minus from binary minus is based on
+                         * the discussion at http://wcipeg.com/wiki/Shunting_yard_algorithm#Extensions
+                         */
                         if (tokens.isEmpty() && operand.length() == 0) {
                             // This means the "-" character is the first non-whitespace character
                             // in the expression.
@@ -256,7 +316,7 @@ public class EquationParser {
                             }
 
                             String previousToken = tokens.get(tokens.size() - 1);
-                            if (previousToken.matches("\\+|-|\\*|/|\\^|\\(|sin|cos|tan")) {
+                            if (previousToken.matches("[+\\-*/^(]|sin|cos|tan")) {
                                 tokens.add(UNARY_MINUS_TOKEN);
                             } else {
                                 tokens.add("-");
