@@ -415,7 +415,7 @@ public final class EquationParser {
             throw new IllegalArgumentException("Given expression contains mismatched parentheses.");
         } else {
             String lastToken = tokens.get(tokens.size() - 1);
-            if (lastToken.matches("\\+|-|\\*|/|\\^|sin|cos|tan")
+            if (lastToken.matches("[+\\-*/^]|sin|cos|tan")
                     || lastToken.equals(UNARY_MINUS_TOKEN)) {
                 throw new IllegalArgumentException("Given expression is invalid.");
             }
