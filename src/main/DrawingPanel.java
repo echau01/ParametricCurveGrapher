@@ -49,8 +49,8 @@ public class DrawingPanel extends JPanel {
 	 * ColouredPoints into. When a new parametric curve is just starting
 	 * to be drawn, currentIndex is initially set to -1 because
 	 * paintComponent() increments currentIndex if the curve is not changing
-	 * direction. Thus, on the first clock tick, currentIndex is incremented
-	 * to 0 (its expected value).
+	 * direction. Thus, right before the curve starts to be drawn,
+	 * currentIndex is incremented to 0 (its expected value).
 	 */
 	private int currentIndex;
 
@@ -86,8 +86,8 @@ public class DrawingPanel extends JPanel {
 		increasingList = new ArrayList<ColouredPoint>(ParametricCurve.APPROX_NUM_POINTS);
 		decreasingList = new ArrayList<ColouredPoint>(ParametricCurve.APPROX_NUM_POINTS);
 
-		// currentIndex is set to -1 because on the next clock tick,
-		// paintComponent() will increment currentIndex by 1, making
+		// currentIndex is set to -1 because just before the curve starts being
+		// drawn, paintComponent() will increment currentIndex by 1, making
 		// currentIndex equal 0 as expected.
 		currentIndex = -1;
 	}
@@ -246,8 +246,8 @@ public class DrawingPanel extends JPanel {
 		increasingList.clear();
 		decreasingList.clear();
 
-		// currentIndex is set to -1 because on the next clock tick,
-		// paintComponent() will increment currentIndex by 1, making
+		// currentIndex is set to -1 because just before the curve starts being
+		// drawn, paintComponent() will increment currentIndex by 1, making
 		// currentIndex equal 0 as expected.
 		currentIndex = -1;
 		oneCycleComplete = false;
