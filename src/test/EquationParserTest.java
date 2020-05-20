@@ -18,6 +18,10 @@ public class EquationParserTest {
         String expression7 = "0.8^t^2"; // interpreted as 0.8^(t^2)
         String expression8 = "0 / 0";
         String expression9 = "sin(t) * (" + Math.E + "^cos(t) - 2cos(4t) - (sin(t / 12))^5)";
+        String expression10 = "(3)(4t)";
+        String expression11 = "sin(t)(cos(t))"; // interpreted as (sin(t)) * (cos(t))
+        String expression12 = "(3)4t";
+        String expression13 = "(3)t(5)6";
 
         double t1 = -304.46;
         double t2 = 3.4594;
@@ -28,6 +32,10 @@ public class EquationParserTest {
         double t7 = Math.E;
         double t8 = Math.cos(384);
         double t9 = 2 * Math.PI;
+        double t10 = 3.572;
+        double t11 = -Math.E * Math.PI;
+        double t12 = 2.5;
+        double t13 = 4.12;
 
         double expectedResult1 = 4.5;
         double expectedResult2 = -4 + Math.pow(t2, 2);
@@ -39,6 +47,10 @@ public class EquationParserTest {
         double expectedResult8 = Double.NaN;
         double expectedResult9 = Math.sin(t9) * (Math.pow(Math.E, Math.cos(t9))
                 - 2 * Math.cos(4 * t9) - Math.pow(Math.sin(t9 / 12), 5));
+        double expectedResult10 = (3) * (4 * t10);
+        double expectedResult11 = (Math.sin(t11)) * (Math.cos(t11));
+        double expectedResult12 = 3 * 4 * t12;
+        double expectedResult13 = 3 * t13 * 5 * 6;
 
         assertEquals(expectedResult1, EquationParser.evaluate(expression1, t1));
         assertEquals(expectedResult2, EquationParser.evaluate(expression2, t2));
@@ -49,6 +61,10 @@ public class EquationParserTest {
         assertEquals(expectedResult7, EquationParser.evaluate(expression7, t7));
         assertEquals(expectedResult8, EquationParser.evaluate(expression8, t8));
         assertEquals(expectedResult9, EquationParser.evaluate(expression9, t9));
+        assertEquals(expectedResult10, EquationParser.evaluate(expression10, t10));
+        assertEquals(expectedResult11, EquationParser.evaluate(expression11, t11));
+        assertEquals(expectedResult12, EquationParser.evaluate(expression12, t12));
+        assertEquals(expectedResult13, EquationParser.evaluate(expression13, t13));
     }
 
     @Test
@@ -79,6 +95,11 @@ public class EquationParserTest {
         String invalidExpression24 = "3 + 4 ^ ";
         String invalidExpression25 = "3 + 5cos(3 - (6t^2)"; // mismatched parentheses
         String invalidExpression26 = "4.";
+        String invalidExpression27 = "4.(";
+        String invalidExpression28 = "tan(4).6";
+        String invalidExpression29 = "359. - 8";
+        String invalidExpression30 = "6.cos(-1)";
+        String invalidExpression31 = "cos(1.)";
 
         // Dummy t variable
         double t = Math.cos(1);
@@ -135,6 +156,16 @@ public class EquationParserTest {
                 () -> EquationParser.evaluate(invalidExpression25, t));
         assertThrows(IllegalArgumentException.class,
                 () -> EquationParser.evaluate(invalidExpression26, t));
+        assertThrows(IllegalArgumentException.class,
+                () -> EquationParser.evaluate(invalidExpression27, t));
+        assertThrows(IllegalArgumentException.class,
+                () -> EquationParser.evaluate(invalidExpression28, t));
+        assertThrows(IllegalArgumentException.class,
+                () -> EquationParser.evaluate(invalidExpression29, t));
+        assertThrows(IllegalArgumentException.class,
+                () -> EquationParser.evaluate(invalidExpression30, t));
+        assertThrows(IllegalArgumentException.class,
+                () -> EquationParser.evaluate(invalidExpression31, t));
     }
 
     @Test
@@ -150,6 +181,10 @@ public class EquationParserTest {
         Queue<String> validPostfixQueue2 = new LinkedList<String>(Arrays.asList(validPostfixQueueAsArray2));
         Queue<String> validPostfixQueue3 = new LinkedList<String>(Arrays.asList(validPostfixQueueAsArray3));
 
+        int queueSize1 = validPostfixQueue1.size();
+        int queueSize2 = validPostfixQueue2.size();
+        int queueSize3 = validPostfixQueue3.size();
+
         double t1 = -3.738;
         double t2 = Math.cos(1);
         double t3 = Math.sin(1);
@@ -162,6 +197,11 @@ public class EquationParserTest {
         assertEquals(expectedResult1, EquationParser.evaluate(validPostfixQueue1, t1));
         assertEquals(expectedResult2, EquationParser.evaluate(validPostfixQueue2, t2));
         assertEquals(expectedResult3, EquationParser.evaluate(validPostfixQueue3, t3));
+
+        // The queues themselves should not have changed in size.
+        assertEquals(queueSize1, validPostfixQueue1.size());
+        assertEquals(queueSize2, validPostfixQueue2.size());
+        assertEquals(queueSize3, validPostfixQueue3.size());
     }
 
     @Test
@@ -242,6 +282,11 @@ public class EquationParserTest {
         String invalidExpression24 = "3 + 4 ^ ";
         String invalidExpression25 = "3 + 5cos(3 - (6t^2)"; // mismatched parentheses
         String invalidExpression26 = "4.";
+        String invalidExpression27 = "4.(";
+        String invalidExpression28 = "tan(4).6";
+        String invalidExpression29 = "359. - 8";
+        String invalidExpression30 = "6.cos(-1)";
+        String invalidExpression31 = "cos(1.)";
 
         assertThrows(IllegalArgumentException.class,
                 () -> EquationParser.infixToPostfix(invalidExpression1));
@@ -295,6 +340,16 @@ public class EquationParserTest {
                 () -> EquationParser.infixToPostfix(invalidExpression25));
         assertThrows(IllegalArgumentException.class,
                 () -> EquationParser.infixToPostfix(invalidExpression26));
+        assertThrows(IllegalArgumentException.class,
+                () -> EquationParser.infixToPostfix(invalidExpression27));
+        assertThrows(IllegalArgumentException.class,
+                () -> EquationParser.infixToPostfix(invalidExpression28));
+        assertThrows(IllegalArgumentException.class,
+                () -> EquationParser.infixToPostfix(invalidExpression29));
+        assertThrows(IllegalArgumentException.class,
+                () -> EquationParser.infixToPostfix(invalidExpression30));
+        assertThrows(IllegalArgumentException.class,
+                () -> EquationParser.infixToPostfix(invalidExpression31));
     }
 
     @Test
@@ -315,6 +370,10 @@ public class EquationParserTest {
         String validExpression14 = "(cos(t))^sin(2t)";
         String validExpression15 = "sin -2t + 2";   // this is sin(-2t) + 2
         String validExpression16 = "3 7";  //this is 37
+        String validExpression17 = "(3)(4t)";
+        String validExpression18 = "(3)4t";
+        String validExpression19 = "(3)t";
+        String validExpression20 = "4 + ttan(6)t";   // interpreted as 4 + t * (tan(6)) * t
 
         String[] expectedTokens1 = {"2"};
         String[] expectedTokens2 = {EquationParser.UNARY_MINUS_TOKEN, "3.14159", "+", "43"};
@@ -342,6 +401,10 @@ public class EquationParserTest {
         String[] expectedTokens14 = {"(", "cos", "(", "t", ")", ")", "^", "sin", "(", "2", "*", "t", ")"};
         String[] expectedTokens15 = {"sin", EquationParser.UNARY_MINUS_TOKEN, "2", "*", "t", "+", "2"};
         String[] expectedTokens16 = {"37"};
+        String[] expectedTokens17 = {"(", "3", ")", "*", "(", "4", "*", "t", ")"};
+        String[] expectedTokens18 = {"(", "3", ")", "*", "4", "*", "t"};
+        String[] expectedTokens19 = {"(", "3", ")", "*", "t"};
+        String[] expectedTokens20 = {"4", "+", "t", "*", "tan", "(", "6", ")", "*", "t"};
 
         assertEquals(Arrays.asList(expectedTokens1), EquationParser.tokenize(validExpression1));
         assertEquals(Arrays.asList(expectedTokens2), EquationParser.tokenize(validExpression2));
@@ -359,6 +422,10 @@ public class EquationParserTest {
         assertEquals(Arrays.asList(expectedTokens14), EquationParser.tokenize(validExpression14));
         assertEquals(Arrays.asList(expectedTokens15), EquationParser.tokenize(validExpression15));
         assertEquals(Arrays.asList(expectedTokens16), EquationParser.tokenize(validExpression16));
+        assertEquals(Arrays.asList(expectedTokens17), EquationParser.tokenize(validExpression17));
+        assertEquals(Arrays.asList(expectedTokens18), EquationParser.tokenize(validExpression18));
+        assertEquals(Arrays.asList(expectedTokens19), EquationParser.tokenize(validExpression19));
+        assertEquals(Arrays.asList(expectedTokens20), EquationParser.tokenize(validExpression20));
     }
 
     @Test
@@ -389,6 +456,11 @@ public class EquationParserTest {
         String invalidExpression24 = "3 + 4 ^ ";
         String invalidExpression25 = "3 + 5cos(3 - (6t^2)"; // mismatched parentheses
         String invalidExpression26 = "4.";
+        String invalidExpression27 = "4.(";
+        String invalidExpression28 = "tan(4).6";
+        String invalidExpression29 = "359. - 8";
+        String invalidExpression30 = "6.cos(-1)";
+        String invalidExpression31 = "cos(1.)";
 
         assertThrows(IllegalArgumentException.class, () -> EquationParser.tokenize(invalidExpression1));
         assertThrows(IllegalArgumentException.class, () -> EquationParser.tokenize(invalidExpression2));
@@ -416,5 +488,10 @@ public class EquationParserTest {
         assertThrows(IllegalArgumentException.class, () -> EquationParser.tokenize(invalidExpression24));
         assertThrows(IllegalArgumentException.class, () -> EquationParser.tokenize(invalidExpression25));
         assertThrows(IllegalArgumentException.class, () -> EquationParser.tokenize(invalidExpression26));
+        assertThrows(IllegalArgumentException.class, () -> EquationParser.tokenize(invalidExpression27));
+        assertThrows(IllegalArgumentException.class, () -> EquationParser.tokenize(invalidExpression28));
+        assertThrows(IllegalArgumentException.class, () -> EquationParser.tokenize(invalidExpression29));
+        assertThrows(IllegalArgumentException.class, () -> EquationParser.tokenize(invalidExpression30));
+        assertThrows(IllegalArgumentException.class, () -> EquationParser.tokenize(invalidExpression31));
     }
 }

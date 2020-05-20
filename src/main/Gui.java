@@ -1,44 +1,30 @@
 package main;
 
-import javax.swing.JFrame;
-import javax.swing.Timer;
-
-import java.awt.Color;
-import java.awt.Container;
+import javax.swing.*;
+import java.awt.*;
 
 @SuppressWarnings("serial")
 public class Gui extends JFrame {
 	/* Constants */
 	private static final boolean IS_RESIZABLE = false;
-	private static final Color BACKGROUND_COLOUR = Color.WHITE;
-	
-	private ButterflyCurve curve;
-	private Screen screen;
 	
 	public Gui() {
-		curve = new ButterflyCurve(0, 2 * Math.PI);
-		screen = new Screen(curve);
-		this.add(screen);
+		Container pane = this.getContentPane();
+
+		this.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
+
+		pane.add(EquationPanel.getInstance());
+		pane.add(DrawingPanel.getInstance());
 	}
 	
 	public void setUpGui() {
-		Container c = this.getContentPane();
-		c.setBackground(BACKGROUND_COLOUR);
 		this.setResizable(IS_RESIZABLE);
 		this.pack();
-		this.setTitle("Butterfly Curve");
+		this.setTitle("Parametric Curve Grapher");
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);
-		
-		new Timer(1, screen.getPainter()).start();
-	}
-	
-	public ButterflyCurve getCurve() {
-		return curve;
-	}
-	
-	public Screen getScreen() {
-		return screen;
+
+		new Timer(1, DrawingPanel.getInstance().getPainter()).start();
 	}
 }

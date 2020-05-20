@@ -57,16 +57,21 @@ public final class EquationParser {
      * (, ), sin, cos, tan. Unary plus is NOT allowed (but unary minus is
      * allowed).
      *
+     * This method does not change the input Queue, as a copy of the Queue is
+     * created at the beginning.
+     *
      * @return the result of evaluating the postfix expression contained in the Queue
      *
      * @throws IllegalArgumentException if the postfix expression
      * contained in the given Queue is invalid.
      */
     public static double evaluate(Queue<String> postfixQueue, double t) {
+        Queue<String> postfixQueueCopy = new LinkedList<String>(postfixQueue);
+
         Stack<Double> operands = new Stack<Double>();
 
-        while (!postfixQueue.isEmpty()) {
-            String currentToken = postfixQueue.poll();
+        while (!postfixQueueCopy.isEmpty()) {
+            String currentToken = postfixQueueCopy.poll();
             try {
                 switch (currentToken) {
                     case "+": {
@@ -264,7 +269,7 @@ public final class EquationParser {
                         operand.setLength(0);
                         operandHasDecimalPoint = false;
                     } else if (currentChar.equals("(")) {
-                        if (!tokens.isEmpty() && tokens.get(tokens.size() - 1).equals("t")) {
+                        if (!tokens.isEmpty() && tokens.get(tokens.size() - 1).matches("[t)]")) {
                             tokens.add("*");
                         } else if (operand.length() != 0) {
                             if (operand.substring(operand.length() - 1).equals(".")) {
@@ -325,7 +330,7 @@ public final class EquationParser {
                         operand.setLength(0);
                         operandHasDecimalPoint = false;
                     } else if (currentChar.equals("t")) {
-                        if (!tokens.isEmpty() && tokens.get(tokens.size() - 1).equals("t")) {
+                        if (!tokens.isEmpty() && tokens.get(tokens.size() - 1).matches("[t)]")) {
                             tokens.add("*");
                         } else if (operand.length() != 0) {
                             if (operand.substring(operand.length() - 1).equals(".")) {
@@ -365,11 +370,7 @@ public final class EquationParser {
                         // has currentChar equal to one of the first letters of "sin",
                         // or "cos". If the expression is invalid, it will be caught in
                         // a few more iterations.
-                        if (!tokens.isEmpty() && tokens.get(tokens.size() - 1).equals("t")) {
-                            tokens.add("*");
-                            operand.setLength(0);
-                            operandHasDecimalPoint = false;
-                        } else if (operand.length() != 0) {
+                        if (operand.length() != 0) {
                             if (operand.substring(operand.length() - 1).equals(".")) {
                                 throw new IllegalArgumentException("Given expression contains misplaced decimal point.");
                             }
