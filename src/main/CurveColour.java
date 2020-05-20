@@ -1,4 +1,4 @@
-package echau.gui.butterflycurve;
+package main;
 
 /**
  * This enum contains all of the colours that the curve tracer uses.
