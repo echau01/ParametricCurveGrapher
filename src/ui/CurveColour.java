@@ -1,4 +1,4 @@
-package main;
+package ui;
 
 /**
  * This enum contains all of the colours that the curve tracer uses.

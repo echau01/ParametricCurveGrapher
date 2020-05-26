@@ -1,4 +1,6 @@
-package main;
+package ui;
+
+import curve.ParametricCurve;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

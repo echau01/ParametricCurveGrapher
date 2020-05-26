@@ -1,4 +1,4 @@
-package main;
+package curve;
 
 import java.util.Queue;
 
