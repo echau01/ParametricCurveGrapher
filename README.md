@@ -8,7 +8,7 @@ are called the parametric equations of the curve.
 
 Some screenshots of the program in action are provided below.
 
-This first screenshot shows the butterfly curve being traced out.
+This first screenshot shows the [Butterfly Curve](https://en.wikipedia.org/wiki/Butterfly_curve_(transcendental)) being traced out.
 
 ![Picture of the user interface](https://user-images.githubusercontent.com/25561432/82864687-f264b700-9ed9-11ea-8a92-c14f2485e2a2.PNG)
 
