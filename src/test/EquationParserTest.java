@@ -22,6 +22,7 @@ public class EquationParserTest {
         String expression11 = "sin(t)(cos(t))"; // interpreted as (sin(t)) * (cos(t))
         String expression12 = "(3)4t";
         String expression13 = "(3)t(5)6";
+        String expression14 = "cos(2t)sin(30t + 5)tan(6)";
 
         double t1 = -304.46;
         double t2 = 3.4594;
@@ -36,6 +37,7 @@ public class EquationParserTest {
         double t11 = -Math.E * Math.PI;
         double t12 = 2.5;
         double t13 = 4.12;
+        double t14 = 6.034;
 
         double expectedResult1 = 4.5;
         double expectedResult2 = -4 + Math.pow(t2, 2);
@@ -51,6 +53,7 @@ public class EquationParserTest {
         double expectedResult11 = (Math.sin(t11)) * (Math.cos(t11));
         double expectedResult12 = 3 * 4 * t12;
         double expectedResult13 = 3 * t13 * 5 * 6;
+        double expectedResult14 = Math.cos(2 * t14) * Math.sin(30 * t14 + 5) * Math.tan(6);
 
         assertEquals(expectedResult1, EquationParser.evaluate(expression1, t1));
         assertEquals(expectedResult2, EquationParser.evaluate(expression2, t2));
@@ -65,6 +68,7 @@ public class EquationParserTest {
         assertEquals(expectedResult11, EquationParser.evaluate(expression11, t11));
         assertEquals(expectedResult12, EquationParser.evaluate(expression12, t12));
         assertEquals(expectedResult13, EquationParser.evaluate(expression13, t13));
+        assertEquals(expectedResult14, EquationParser.evaluate(expression14, t14));
     }
 
     @Test
@@ -374,6 +378,7 @@ public class EquationParserTest {
         String validExpression18 = "(3)4t";
         String validExpression19 = "(3)t";
         String validExpression20 = "4 + ttan(6)t";   // interpreted as 4 + t * (tan(6)) * t
+        String validExpression21 = "ttan(4)cos(6)tsin(8tt)";
 
         String[] expectedTokens1 = {"2"};
         String[] expectedTokens2 = {EquationParser.UNARY_MINUS_TOKEN, "3.14159", "+", "43"};
@@ -405,6 +410,8 @@ public class EquationParserTest {
         String[] expectedTokens18 = {"(", "3", ")", "*", "4", "*", "t"};
         String[] expectedTokens19 = {"(", "3", ")", "*", "t"};
         String[] expectedTokens20 = {"4", "+", "t", "*", "tan", "(", "6", ")", "*", "t"};
+        String[] expectedTokens21 = {"t", "*", "tan", "(", "4", ")", "*", "cos", "(", "6", ")", "*", "t",
+                "*", "sin", "(", "8", "*", "t", "*", "t", ")"};
 
         assertEquals(Arrays.asList(expectedTokens1), EquationParser.tokenize(validExpression1));
         assertEquals(Arrays.asList(expectedTokens2), EquationParser.tokenize(validExpression2));
@@ -426,6 +433,7 @@ public class EquationParserTest {
         assertEquals(Arrays.asList(expectedTokens18), EquationParser.tokenize(validExpression18));
         assertEquals(Arrays.asList(expectedTokens19), EquationParser.tokenize(validExpression19));
         assertEquals(Arrays.asList(expectedTokens20), EquationParser.tokenize(validExpression20));
+        assertEquals(Arrays.asList(expectedTokens21), EquationParser.tokenize(validExpression21));
     }
 
     @Test

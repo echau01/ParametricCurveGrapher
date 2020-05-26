@@ -370,7 +370,9 @@ public final class EquationParser {
                         // has currentChar equal to one of the first letters of "sin",
                         // or "cos". If the expression is invalid, it will be caught in
                         // a few more iterations.
-                        if (operand.length() != 0) {
+                        if (!tokens.isEmpty() && tokens.get(tokens.size() - 1).equals(")")) {
+                            tokens.add("*");
+                        } else if (operand.length() != 0) {
                             if (operand.substring(operand.length() - 1).equals(".")) {
                                 throw new IllegalArgumentException("Given expression contains misplaced decimal point.");
                             }
