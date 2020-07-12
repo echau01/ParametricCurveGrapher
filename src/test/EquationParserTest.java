@@ -7,22 +7,89 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class EquationParserTest {
+    private String invalidExpression1;
+    private String invalidExpression2;
+    private String invalidExpression3;
+    private String invalidExpression4;
+    private String invalidExpression5;
+    private String invalidExpression6;
+    private String invalidExpression7;
+    private String invalidExpression8;
+    private String invalidExpression9;
+    private String invalidExpression10;
+    private String invalidExpression11;
+    private String invalidExpression12;
+    private String invalidExpression13;
+    private String invalidExpression14;
+    private String invalidExpression15;
+    private String invalidExpression16;
+    private String invalidExpression17;
+    private String invalidExpression18;
+    private String invalidExpression19;
+    private String invalidExpression20;
+    private String invalidExpression21;
+    private String invalidExpression22;
+    private String invalidExpression23;
+    private String invalidExpression24;
+    private String invalidExpression25;
+    private String invalidExpression26;
+    private String invalidExpression27;
+    private String invalidExpression28;
+    private String invalidExpression29;
+    private String invalidExpression30;
+    private String invalidExpression31;
+
+    @BeforeEach
+    public void initializeInvalidExpressions() {
+        invalidExpression1 = "";
+        invalidExpression2 = "(";
+        invalidExpression3 = ")";
+        invalidExpression4 = "+";
+        invalidExpression5 = "-";
+        invalidExpression6 = "*";
+        invalidExpression7 = "/";
+        invalidExpression8 = "sin";
+        invalidExpression9 = "cos";
+        invalidExpression10 = "tan";
+        invalidExpression11 = "()";
+        invalidExpression12 = "sin^2(5)";
+        invalidExpression13 = "    ";
+        invalidExpression14 = "cos(3t).67";
+        invalidExpression15 = "t.0";
+        invalidExpression16 = "2.t";
+        invalidExpression17 = "3. * 4";
+        invalidExpression18 = "2.5.7";
+        invalidExpression19 = "2..5";
+        invalidExpression20 = "3 + 2.";
+        invalidExpression21 = "3^-*.4";
+        invalidExpression22 = "arctan(1)";
+        invalidExpression23 = "3 + 4 --";
+        invalidExpression24 = "3 + 4 ^ ";
+        invalidExpression25 = "3 + 5cos(3 - (6t^2)"; // mismatched parentheses
+        invalidExpression26 = "4.";
+        invalidExpression27 = "4.(";
+        invalidExpression28 = "tan(4).6";
+        invalidExpression29 = "359. - 8";
+        invalidExpression30 = "6.cos(-1)";
+        invalidExpression31 = "cos(1.)";
+    }
+
     @Test
     public void evaluateValidInfixExpressions() {
-        String expression1 = "4.5";
-        String expression2 = "-4 + t^2";
-        String expression3 = "5sin(t^3 * cos(0)) - 10t";
-        String expression4 = "tan(-t - 1)^2";   // interpreted as tan((-t - 1)^2)
-        String expression5 = "(tan(-t - 1))^2";
-        String expression6 = "-5^2t";   // interpreted as (-5^2) * t
-        String expression7 = "0.8^t^2"; // interpreted as 0.8^(t^2)
-        String expression8 = "0 / 0";
-        String expression9 = "sin(t) * (" + Math.E + "^cos(t) - 2cos(4t) - (sin(t / 12))^5)";
-        String expression10 = "(3)(4t)";
-        String expression11 = "sin(t)(cos(t))"; // interpreted as (sin(t)) * (cos(t))
-        String expression12 = "(3)4t";
-        String expression13 = "(3)t(5)6";
-        String expression14 = "cos(2t)sin(30t + 5)tan(6)";
+        String validExpression1 = "4.5";
+        String validExpression2 = "-4 + t^2";
+        String validExpression3 = "5sin(t^3 * cos(0)) - 10t";
+        String validExpression4 = "tan(-t - 1)^2";   // interpreted as tan((-t - 1)^2)
+        String validExpression5 = "(tan(-t - 1))^2";
+        String validExpression6 = "-5^2t";   // interpreted as (-5^2) * t
+        String validExpression7 = "0.8^t^2"; // interpreted as 0.8^(t^2)
+        String validExpression8 = "0 / 0";
+        String validExpression9 = "sin(t) * (" + Math.E + "^cos(t) - 2cos(4t) - (sin(t / 12))^5)";
+        String validExpression10 = "(3)(4t)";
+        String validExpression11 = "sin(t)(cos(t))"; // interpreted as (sin(t)) * (cos(t))
+        String validExpression12 = "(3)4t";
+        String validExpression13 = "(3)t(5)6";
+        String validExpression14 = "cos(2t)sin(30t + 5)tan(6)";
 
         double t1 = -304.46;
         double t2 = 3.4594;
@@ -55,56 +122,24 @@ public class EquationParserTest {
         double expectedResult13 = 3 * t13 * 5 * 6;
         double expectedResult14 = Math.cos(2 * t14) * Math.sin(30 * t14 + 5) * Math.tan(6);
 
-        assertEquals(expectedResult1, EquationParser.evaluate(expression1, t1));
-        assertEquals(expectedResult2, EquationParser.evaluate(expression2, t2));
-        assertEquals(expectedResult3, EquationParser.evaluate(expression3, t3));
-        assertEquals(expectedResult4, EquationParser.evaluate(expression4, t4));
-        assertEquals(expectedResult5, EquationParser.evaluate(expression5, t5));
-        assertEquals(expectedResult6, EquationParser.evaluate(expression6, t6));
-        assertEquals(expectedResult7, EquationParser.evaluate(expression7, t7));
-        assertEquals(expectedResult8, EquationParser.evaluate(expression8, t8));
-        assertEquals(expectedResult9, EquationParser.evaluate(expression9, t9));
-        assertEquals(expectedResult10, EquationParser.evaluate(expression10, t10));
-        assertEquals(expectedResult11, EquationParser.evaluate(expression11, t11));
-        assertEquals(expectedResult12, EquationParser.evaluate(expression12, t12));
-        assertEquals(expectedResult13, EquationParser.evaluate(expression13, t13));
-        assertEquals(expectedResult14, EquationParser.evaluate(expression14, t14));
+        assertEquals(expectedResult1, EquationParser.evaluate(validExpression1, t1));
+        assertEquals(expectedResult2, EquationParser.evaluate(validExpression2, t2));
+        assertEquals(expectedResult3, EquationParser.evaluate(validExpression3, t3));
+        assertEquals(expectedResult4, EquationParser.evaluate(validExpression4, t4));
+        assertEquals(expectedResult5, EquationParser.evaluate(validExpression5, t5));
+        assertEquals(expectedResult6, EquationParser.evaluate(validExpression6, t6));
+        assertEquals(expectedResult7, EquationParser.evaluate(validExpression7, t7));
+        assertEquals(expectedResult8, EquationParser.evaluate(validExpression8, t8));
+        assertEquals(expectedResult9, EquationParser.evaluate(validExpression9, t9));
+        assertEquals(expectedResult10, EquationParser.evaluate(validExpression10, t10));
+        assertEquals(expectedResult11, EquationParser.evaluate(validExpression11, t11));
+        assertEquals(expectedResult12, EquationParser.evaluate(validExpression12, t12));
+        assertEquals(expectedResult13, EquationParser.evaluate(validExpression13, t13));
+        assertEquals(expectedResult14, EquationParser.evaluate(validExpression14, t14));
     }
 
     @Test
     public void evaluateInvalidInfixExpressions() {
-        String invalidExpression1 = "";
-        String invalidExpression2 = "(";
-        String invalidExpression3 = ")";
-        String invalidExpression4 = "+";
-        String invalidExpression5 = "-";
-        String invalidExpression6 = "*";
-        String invalidExpression7 = "/";
-        String invalidExpression8 = "sin";
-        String invalidExpression9 = "cos";
-        String invalidExpression10 = "tan";
-        String invalidExpression11 = "()";
-        String invalidExpression12 = "sin^2(5)";
-        String invalidExpression13 = "    ";
-        String invalidExpression14 = "cos(3t).67";
-        String invalidExpression15 = "t.0";
-        String invalidExpression16 = "2.t";
-        String invalidExpression17 = "3. * 4";
-        String invalidExpression18 = "2.5.7";
-        String invalidExpression19 = "2..5";
-        String invalidExpression20 = "3 + 2.";
-        String invalidExpression21 = "3^-*.4";
-        String invalidExpression22 = "arctan(1)";
-        String invalidExpression23 = "3 + 4 --";
-        String invalidExpression24 = "3 + 4 ^ ";
-        String invalidExpression25 = "3 + 5cos(3 - (6t^2)"; // mismatched parentheses
-        String invalidExpression26 = "4.";
-        String invalidExpression27 = "4.(";
-        String invalidExpression28 = "tan(4).6";
-        String invalidExpression29 = "359. - 8";
-        String invalidExpression30 = "6.cos(-1)";
-        String invalidExpression31 = "cos(1.)";
-
         // Dummy t variable
         double t = Math.cos(1);
 
@@ -260,38 +295,6 @@ public class EquationParserTest {
 
     @Test
     public void infixToPostfixInvalidExpressions() {
-        String invalidExpression1 = "";
-        String invalidExpression2 = "(";
-        String invalidExpression3 = ")";
-        String invalidExpression4 = "+";
-        String invalidExpression5 = "-";
-        String invalidExpression6 = "*";
-        String invalidExpression7 = "/";
-        String invalidExpression8 = "sin";
-        String invalidExpression9 = "cos";
-        String invalidExpression10 = "tan";
-        String invalidExpression11 = "()";
-        String invalidExpression12 = "sin^2(5)";
-        String invalidExpression13 = "    ";
-        String invalidExpression14 = "cos(3t).67";
-        String invalidExpression15 = "t.0";
-        String invalidExpression16 = "2.t";
-        String invalidExpression17 = "3. * 4";
-        String invalidExpression18 = "2.5.7";
-        String invalidExpression19 = "2..5";
-        String invalidExpression20 = "3 + 2.";
-        String invalidExpression21 = "3^-*.4";
-        String invalidExpression22 = "arctan(1)";
-        String invalidExpression23 = "3 + 4 --";
-        String invalidExpression24 = "3 + 4 ^ ";
-        String invalidExpression25 = "3 + 5cos(3 - (6t^2)"; // mismatched parentheses
-        String invalidExpression26 = "4.";
-        String invalidExpression27 = "4.(";
-        String invalidExpression28 = "tan(4).6";
-        String invalidExpression29 = "359. - 8";
-        String invalidExpression30 = "6.cos(-1)";
-        String invalidExpression31 = "cos(1.)";
-
         assertThrows(IllegalArgumentException.class,
                 () -> EquationParser.infixToPostfix(invalidExpression1));
         assertThrows(IllegalArgumentException.class,
@@ -438,38 +441,6 @@ public class EquationParserTest {
 
     @Test
     public void tokenizeInvalidExpressions() {
-        String invalidExpression1 = "";
-        String invalidExpression2 = "(";
-        String invalidExpression3 = ")";
-        String invalidExpression4 = "+";
-        String invalidExpression5 = "-";
-        String invalidExpression6 = "*";
-        String invalidExpression7 = "/";
-        String invalidExpression8 = "sin";
-        String invalidExpression9 = "cos";
-        String invalidExpression10 = "tan";
-        String invalidExpression11 = "()";
-        String invalidExpression12 = "sin^2(5)";
-        String invalidExpression13 = "    ";
-        String invalidExpression14 = "cos(3t).67";
-        String invalidExpression15 = "t.0";
-        String invalidExpression16 = "2.t";
-        String invalidExpression17 = "3. * 4";
-        String invalidExpression18 = "2.5.7";
-        String invalidExpression19 = "2..5";
-        String invalidExpression20 = "3 + 2.";
-        String invalidExpression21 = "3^-*.4";
-        String invalidExpression22 = "arctan(1)";
-        String invalidExpression23 = "3 + 4 --";
-        String invalidExpression24 = "3 + 4 ^ ";
-        String invalidExpression25 = "3 + 5cos(3 - (6t^2)"; // mismatched parentheses
-        String invalidExpression26 = "4.";
-        String invalidExpression27 = "4.(";
-        String invalidExpression28 = "tan(4).6";
-        String invalidExpression29 = "359. - 8";
-        String invalidExpression30 = "6.cos(-1)";
-        String invalidExpression31 = "cos(1.)";
-
         assertThrows(IllegalArgumentException.class, () -> EquationParser.tokenize(invalidExpression1));
         assertThrows(IllegalArgumentException.class, () -> EquationParser.tokenize(invalidExpression2));
         assertThrows(IllegalArgumentException.class, () -> EquationParser.tokenize(invalidExpression3));
