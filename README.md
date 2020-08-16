@@ -6,9 +6,13 @@ variable, t. For any arbitrary t value, the x-coordinate is given by the functio
 the y-coordinate is likewise given by the function y(t). The equations for x(t) and y(t)
 are called the parametric equations of the curve.
 
-Some screenshots of the program in action are provided below.
+## GIFs and Screenshots
 
-This first screenshot shows the [Butterfly Curve](https://en.wikipedia.org/wiki/Butterfly_curve_(transcendental)) being traced out.
+Here is a GIF of the parametric curve grapher in action:
+
+![Parametric curve grapher GIF demo](https://user-images.githubusercontent.com/25561432/90328562-19b7a700-df52-11ea-8c5d-362c2a2bc742.gif)
+
+This screenshot shows the [Butterfly Curve](https://en.wikipedia.org/wiki/Butterfly_curve_(transcendental)) being traced out.
 
 ![Picture of the user interface](https://user-images.githubusercontent.com/25561432/82864687-f264b700-9ed9-11ea-8a92-c14f2485e2a2.PNG)
 
@@ -16,8 +20,7 @@ Shown below is a screenshot of a parametric curve with a beautiful oscillatory p
 
 ![A picture of the user interface with a different graph](https://user-images.githubusercontent.com/25561432/82864681-f09af380-9ed9-11ea-8ec0-5aae41c25822.PNG)
 
-
-### Usage
+## Usage
 
 To graph a parametric curve using this program, fill in the parametric equations for x(t)
 and y(t) along with the bounds of the t variable in the appropriate text fields. Then, click the
