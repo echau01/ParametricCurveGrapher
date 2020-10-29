@@ -8,7 +8,9 @@ import java.util.*;
  */
 public final class EquationParser {
     private static Map<String, Integer> operatorToPrecedence = new HashMap<String, Integer>();
-    private static Map<String, Boolean> operatorIsRightAssociativeMap = new HashMap<String, Boolean>();
+
+    /* An operator maps to true if it is right associative; false if it is left associative. */
+    private static Map<String, Boolean> operatorToAssociativity = new HashMap<String, Boolean>();
 
     /**
      * The token used to represent the unary minus operator when a
@@ -26,11 +28,11 @@ public final class EquationParser {
         operatorToPrecedence.put("/", 2);
         operatorToPrecedence.put("^", 3);
 
-        operatorIsRightAssociativeMap.put("+", false);
-        operatorIsRightAssociativeMap.put("-", false);
-        operatorIsRightAssociativeMap.put("*", false);
-        operatorIsRightAssociativeMap.put("/", false);
-        operatorIsRightAssociativeMap.put("^", true);
+        operatorToAssociativity.put("+", false);
+        operatorToAssociativity.put("-", false);
+        operatorToAssociativity.put("*", false);
+        operatorToAssociativity.put("/", false);
+        operatorToAssociativity.put("^", true);
     }
 
     /**
@@ -167,9 +169,9 @@ public final class EquationParser {
                     while ((nextStackSymbol.matches("sin|cos|tan")
                             || nextStackSymbol.equals(UNARY_MINUS_TOKEN))
                             || (nextStackSymbol.matches("[+\\-*/^]")
-                            && (operatorToPrecedence.get(nextStackSymbol) > precedence
-                            || (operatorToPrecedence.get(nextStackSymbol) == precedence
-                            && !operatorIsRightAssociativeMap.get(nextStackSymbol))))) {
+                                && (operatorToPrecedence.get(nextStackSymbol) > precedence
+                                    || (operatorToPrecedence.get(nextStackSymbol) == precedence
+                                        && !operatorToAssociativity.get(nextStackSymbol))))) {
                         output.add(operatorBracketFunctionStack.pop());
 
                         if (operatorBracketFunctionStack.isEmpty()) {
